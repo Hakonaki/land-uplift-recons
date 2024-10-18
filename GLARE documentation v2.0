@@ -1,0 +1,144 @@
+Glacial Land Adjustment Regenerator (GLARE) for Fennoscandia (v. 2.0)
+
+Aki Hakonen	18-Oct-2024
+Archaeologist, PhD
+University of Oulu, Finland
+
+Keywords: QGIS; post-glacial; land uplift; sea-level rise; Fennoscandia; Holocene; prehistory; digital archaeology
+
+
+1. Introduction
+
+This method for QGIS (verified version 3.38 and 3.28) transforms a chosen digital terrain model (DTM) from an area within Fennoscandia, Northern Europe, to simulate a past reconstructed landscape. The applied formula takes into account the glacial isostatic adjustment (land uplift). A global sea-level correction and a separate lake table correction during Baltic isolations can be applied separately. The formula and its variables are based on published research.
+
+The method is temporally applicable throughout the Holocene to the end of the Pleistocene, with a suggested maximum time-range of ~17,000 BP (15,000 BCE) and from present day to the future (2500 CE). The algorithm calculates the land uplift for each pixel of the DTM by referencing three base raster files.
+
+Workflow summary:
+    1. Load necessary raster files in QGIS.
+    2. Apply expression in Raster Calculator.
+    3. Apply sea-level correction.
+    4. Done.
+
+
+2. Instructions for easy use
+
+The algorithm is made for QGIS, Raster Calculator tool.  The formula uses three base raster files and a DTM selected by the user for base calculation, with the sea-level reference applied manually.		
+	Download (from Google Drive):	TIN_uplift.tif
+							TIN_meltBP.tif
+							TIN_gthick.tif
+							Sea-level reference card (ods, xlsx)
+							
+    1. In QGIS, add the three default raster files (Layer (Top Menu) → Add Layer → Add Raster file → Browse → Add File).
+    2. Load the base DTM that you want to transform [User_DTM].
+    3. Open Raster Calculator     Raster (Top Menu) → Raster Calculator (4–10)
+				or (QGIS v. 3.28)	Processing (Top Menu) → Toolbox → Raster 								Analysis → 	Raster Calculator.
+[Top Menu Raster path (allows faster on-the-fly generation)]
+    4. Copy the following expression (here) to Raster Calculator Expression:
+"[User_DTM]@1" - ((2 / 3.14159 * ("TIN_gthick@1" * 0.077) * (ATAN("TIN_meltBP@1" / (5 * ("TIN_gthick@1" * 0.077) + 590)) - ATAN(("TIN_meltBP@1" -1950 + -4000 / (5 * ("TIN_gthick@1" * 0.077) + 590)))) + ((("TIN_uplift@1" * 0.075) * ((2020 - -4000) / 100)) - (0.5 * (-0.011 * (("TIN_uplift@1" * 0.075) * ((2020 - -4000) / 100) ^ 2))))) - [Sea-level reference]
+    5. Replace [User_DTM] with your DTM from the Raster Band list.
+    6. Replace the three values -4000 (meaning 4000 BCE) with your chosen year (CE, with negative value signifying BCE). Make sure these are all the same.
+    7. Apply approximation of sea-level fluctuation from the Sea-level reference card (especially relevant prior to 2000 BCE). Replace [Sea-level reference] by appending the negative value to the Expression from the Sea-level reference card.
+For example at 7000 BCE the minimum elevation level is -38 for the Baltic Sea (Ancylus Lake) zone and -25.5 for the Atlantic zone.
+    8. Either check the Create on-the-fly raster (faster computation, but handling multiple temporary files increases RAM usage), or specify a file destination for the new raster (Output Layer, Browse).
+    9. Click Use Selected Layer Extent (make sure your DTM is highlighted on the left-hand list).
+    10. Click OK (apply elevation-based pseudocoloring via Symbology, set minimum to zero, and enable clip out-of-range values).
+
+[Processing Toolbox path (enables batch processing)]:
+The Processing Toolbox → Raster Calculator path enables Run as Batch Process, which can process several consecutive processes on the same run. Note: The expression syntax stopped functioning with the toolbox calculator by the overnight build of QGIS, v. 3.34.2, but works well at least in Long-Term Release, v. 3.28.14.
+
+Repeat steps 4–7.
+
+    8. Toggle your original DTM as the Reference Layer.
+    9. Either leave Output empty (creating a temporary file) or specify a file destination for the new raster (Save to File).
+    10. Click Run.
+
+The base raster files were TIN interpolated from vector data (the geopackage includes the extent vector of GLARE as well as the vector for Baltic Lake cutout, which is used in large models when Oceanic and Baltic mean water-levels are asynchronous).
+
+
+3. Method
+
+3.1. Summary
+
+The method consists of three elements: slow and fast components, and the change in sea-level. Slow uplift is the base effect that has undergone constant yet slight deceleration. Fast uplift is the higher rate land rebounding effect that was in effect following the retraction of the Fennoscandian Ice Sheet.
+The fast uplift algorithm was formulated by Tore Påsse and Leif Andersson (2005) and has been applied in prior land uplift studies (e.g. Vuorela et al. 2009). The equation produces an inverted arching tangent, resembling an invented and tilted S-curve. It needs a slow-uplift calculation on the side to provide a gradual baseline.
+The slow uplift equation used here is based on geologist Marjatta Okko’s (1967) formulation, first applied in archaeology by Jari Okkonen (1998; 2003). The validity of the equation was tested in a 2017 publication (Hakonen 2017). This equation by itself is applicable until 4000 BCE, before which sea-level fluctuation and the effect of the fast uplift plays a major role. To compensate the added effect of the fast component, the variables of the slow component have been scaled based on combined calibration to benchmarks.
+In all simplicity the complete process is fast uplift + slow uplift + sea level reference = units above apparent sea-level.
+
+3.2. Okko (1967) slow uplift equation
+
+Original equation:
+z = (v * t) - (0.5 * d * t2)
+
+v = current uplift rate in m/century.
+t = Time (in centuries).
+d = Deceleration multiplier.
+
+The equation multiplies the current uplift by past centuries and subtracts a negative deceleration factor, resulting in a slight curve that rises back in time.
+
+Applied equation:
+
+z = (v * 0.075) * ((2011 - y) / 100)) - (0.5 * (-0.011 * v * 0.075)) * ((2011 - y) / 100) ^ 2))
+
+v = current uplift rate in mm/year. Base raster interpolated from GPS measurements published by the Nordic Geodetic Commission (NKG2016LU absolute). To convert the rate to m/century and compensate the added effect of the fast uplift, the rate is multiplied by 0.075 (0.1 for conversion and 0.75 for compensation).
+y = Year for simulation (in CE). The 2011 parameter is a probable redundancy (could also be set to whichever year the chosen coordinate system uses as the zero year, or which ever year the elevation measurements of the DEM were taken, but the effect is rather negligible, a few cm give or take). The year is divided by 100 to convert it to centuries.
+Variable d is set at 1.1% regional deceleration, with a multiplier of -0.018 to a converted and compensated v. The original variable value 1.5% was based on tests by Okkonen (1998; 2001) and verified in Hakonen 2017, but these tests were made obsolete by the additional variables in the current method.
+
+3.3. Påsse & Andersson (2005) fast uplift equation with multiplier
+z = 2 / π * (h * 0.077) * arctan(r / (5 * (h * 0.077) + 590) – arctan((r -1950 + y) / (5 * (h * 0.077) + 590)
+h = Maximum thickness of the ice during the last 20000 years according to Patton et al. 2017 (also ICEMAP). The value (in meters) is converted into an abstract multiplier to conform with the original Påsse & Andersson equation.
+r 	= Year when ice retreated from the location, in Before Present. This value derives from the raster file based on a dataset of highest shorelines published by Påsse & Daniels (2015: Table 1).
+y 	= Year for simulation (in CE; in r -1950 + y, the value converts temporarily to BP).
+
+
+
+3.4. Sea level reference card
+
+Regions with land uplift rate 0 mm/year provide optimal benchmarks for sea level fluctuation. Theoretically the most accurate benchmarks derive from submerged archaeological sites and ancient forests that are currently underwater. But there seems to be issues especially with the reliability of such radiocarbon dates. This issue may be caused by carbon, both old and young, mixing with the samples.
+The current sea level reference card was compiled from terrestrial and marine benchmarks on the coast of Pomerania, Lithuania and Denmark (see e.g. Rosentau et al. 2021).
+
+
+4. Benchmarks used in verification (peer-review process and publication ongoing)
+
+
+5. Advanced use
+
+5.1. Inland lake modeling
+
+There is no automated method for lake tilt modeling as of yet. You can do this manually by identifying the lowest outflow, measuring its elevation and matching a contour with the level (contour tool command ‘-fl n.n’).
+
+
+5.2. Tweaking the equation
+
+Land uplift rates in raster TIN_uplift.tif were interpolated from GPS measurements amended with additional values, which calibrates the regional variation in the triangulated TIN according to known benchmarks. The GPS measurements feature error margins, which can be used to refine relative uplift rates. The user may adjust the values of the base vector data accordingly and make a new TIN Interpolation.
+
+Additionally the slow uplift equation can be completely replaced. Its merits lie in prior calibration with an archaeological benchmark with dated surface and underwater features. Nevertheless the equation is linear with a slight deceleration factor, so it may be overly simplified. Påsse & Andersson for one used an arctan equation for slow uplift as well as for the fast.
+
+The resolution for the default base rasters is 0.005 degrees latitude, 0.01 longitude (in WGS84 coordinate system).
+
+
+6. Known issues
+    • The accuracy of the model will increase with each iteration (current 14th iteration).
+    • For now GPS measurements from Russia are unavailable, so the White Sea region is likely inaccurately modeled.
+    • Errors tend to compound the further back in time the simulation runs.
+
+
+7. Links to free-of-charge elevation data
+    • GEBCO 2024 model (both terrestrial elevation and ocean hydrology): https://download.gebco.net/
+    • National Land Survey of Finland (2 and 10 m grids): https://asiointi.maanmittauslaitos.fi/karttapaikka/tiedostopalvelu?lang=en
+    • Sweden’s Lantmäteriet (50 m grid): https://geotorget.lantmateriet.se/geodataprodukter/markhojdmodell-nedladdning-grid-50
+    • Norway’s Kartverket (1 and 10 m grids): https://hoydedata.no
+
+
+References
+Creel, R. C., J. Austermann, N. S. Khan, W. J. D'Andrea, N. Balascio, B. Dyer, E. Ashe & W. Menke (2022). Postglacial relative sea level change in Norway. Quaternary Science Reviews 282: 107422. https://doi.org/10.1016/j.quascirev.2022.107422
+Hakonen, A. (2017). Shoreline displacement of the Finnish Bothnian Bay coast and the spatial patterns of the coastal archaeological record of 4000 BCE – 500 CE. Fennoscandia archaeologica, XXXIV. URL: https://journal.fi/fennoscandiaarchaeologica/article/view/126540/76358
+Okko, M. (1967). The relation between raised shores and present land uplift in Finland during the past 8000 years. Annales Academiae Scientiarum Fennicae Series A III. Geologica – Geographica, 93.
+Okkonen, J. (1998). Muinaiset kivirakennelmat Keski- ja Pohjois-Pohjanmaalla. Unpublished licenciate thesis. Oulu: University of Oulu.
+Okkonen, J. (2003). Jättiläisen hautoja ja hirveitä kiviröykkiöitä – Pohjanmaan muinaisten kivirakennelmien arkeologiaa. Oulu: Oulu University Press.
+Patton, H. (ICEMAP): https://icemap.rhewlif.xyz/
+Patton, H., A. Hubbard, K. Andreassen, et al. (2017). Deglaciation of the Eurasian ice sheet complex. Quarternary Science Reviews 169(1): 148–172.
+Påsse, T. & L. Andersson (2005) Shore-level displacement in Fennoscandia calculated from empirical data, GFF, 127:4, 253-268, DOI:10.1080/11035890501274253
+Påsse T. & J. Daniels (2015). Past shorelines and sea-level displacements. SGU Geological Survey of Sweden. Rapporter och meddelanden 137.
+Rosentau, A., V. Klemann, O. Bennike et al. (2021). A Holocene relative sea-level database for the Baltic Sea. Quarternary Science Reviews 266(15): 107071.
+Skantsi, L. (2023). Kivikauden kylät Keski-Pohjanmaalla : kollektiivisten kyläyhteisöjen synty, kukoistus ja hajoaminen. PhD dissertation. University of Helsinki: Helsinki.
+Vuorela, A., T. Penttinen & A.-M. Lahdenperä (2009). Review of Bothnian Sea Shore-Level Displacement Data and Use of a GIS Tool to Estimate Isostatic Uplift. Posiva Working report 2009-17. Posiva: Olkiluoto.
