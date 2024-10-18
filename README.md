@@ -13,10 +13,9 @@ Replace the three [yearCE] values with the year you want to simulate (in Common 
 Replace User_DTM@1 with the name of your chosen DTM (including @1 for band).
 <br>
 <br>
+<br>
 Example (year 6000 BCE):
 "User_DTM@1" - ((2 / 3.14159 * ("TIN_gthick@1" * 0.077) * (ATAN("TIN_meltBP@1" / (5 * ("TIN_gthick@1" * 0.077) + 590)) - ATAN(("TIN_meltBP@1" -1950 + -6000) / (5 * ("TIN_gthick@1" * 0.077) + 590)))) + ((("TIN_uplift@1" * 0.075) * ((2020 - -6000) / 100)) - (0.5 * (-0.011 * (("TIN_uplift@1" * 0.075) * ((2020 - -6000) / 100) ^ 2))))) - -17
-
-<br>
 <br>
 <br>
 <br>
