@@ -23,10 +23,12 @@ Workflow summary:
 2. Instructions for easy use
 
 The algorithm is made for QGIS, Raster Calculator tool.  The formula uses three base raster files and a DTM selected by the user for base calculation, with the sea-level reference applied manually.		
-	Download (from Google Drive):	TIN_uplift.tif
+	Download (from Google Drive):			TIN_uplift.tif
 							TIN_meltBP.tif
 							TIN_gthick.tif
 							Sea-level reference card (ods, xlsx)
+
+		https://drive.google.com/drive/folders/184nPIZuX83gr3Yd6tVBGXCkpUysNY-CO?usp=drive_link
 							
     1. In QGIS, add the three default raster files (Layer (Top Menu) → Add Layer → Add Raster file → Browse → Add File).
     2. Load the base DTM that you want to transform [User_DTM].
