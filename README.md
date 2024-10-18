@@ -1,15 +1,23 @@
-# land-uplift-recons
-A method for QGIS for simulating land uplift of Fennoscandia with a digital terrain model.
+# Glacial Land Adjustment Regenerator (GLARE)
+A method for QGIS for simulating land uplift of Fennoscandia by recalculating a digital terrain model.
 
 Download the three raster layers from: https://drive.google.com/drive/folders/184nPIZuX83gr3Yd6tVBGXCkpUysNY-CO?usp=drive_link
-and follow instructions in Documentation_v1-7.rtf
+and follow instructions in GLARE_documentation_v2-0.rtf
 
 # Summary
 Load your own DTM and the three default rasters in QGIS, open Raster Calculator tool and paste this equation to Expression:
 
-User_DTM@1 - ((2 / 3.14159 * ("TIN_ice_thickness@1" * 0.061) * (ATAN("TIN_ice_meltBP@1" / (4 * ("TIN_ice_thickness@1" * 0.061) + 350)) - ATAN(("TIN_ice_meltBP@1" -1950 + -4000) / (4 * ("TIN_ice_thickness@1" * 0.061) + 350)))) + ((("TIN_uplift@1" * 0.079) * ((2011 - -4000) / 100)) - (0.5 * (-0.018 * (("TIN_uplift@1" * 0.079) * ((2011 - -4000) / 100) ^ 2)))))
+"User_DTM@1" - ((2 / 3.14159 * ("TIN_gthick@1" * 0.077) * (ATAN("TIN_meltBP@1" / (5 * ("TIN_gthick@1" * 0.077) + 590)) - ATAN(("TIN_meltBP@1" -1950 + [yearCE]) / (5 * ("TIN_gthick@1" * 0.077) + 590)))) + ((("TIN_uplift@1" * 0.075) * ((2020 - [yearCE]) / 100)) - (0.5 * (-0.011 * (("TIN_uplift@1" * 0.075) * ((2020 - [yearCE]) / 100) ^ 2))))) - [sea-level ref]
 
-Replace the three -4000 values with the year you want to simulate (in Common Era, negative value indicates Before Common Era; e.g. 4000 BCE = -4000).
+Replace the three [yearCE] values with the year you want to simulate (in Common Era, negative value indicates Before Common Era; e.g. 4000 BCE = -4000).
 Replace User_DTM@1 with the name of your chosen DTM (including @1 for band).
+<br>
+<br>
+Example (year 6000 BCE):
+"User_DTM@1" - ((2 / 3.14159 * ("TIN_gthick@1" * 0.077) * (ATAN("TIN_meltBP@1" / (5 * ("TIN_gthick@1" * 0.077) + 590)) - ATAN(("TIN_meltBP@1" -1950 + -6000) / (5 * ("TIN_gthick@1" * 0.077) + 590)))) + ((("TIN_uplift@1" * 0.075) * ((2020 - -6000) / 100)) - (0.5 * (-0.011 * (("TIN_uplift@1" * 0.075) * ((2020 - -6000) / 100) ^ 2))))) - -17
 
-After computation apply sea-level either through Symbology or by addition through Raster Calculator.
+<br>
+<br>
+<br>
+<br>
+sea-level ref: https://docs.google.com/spreadsheets/d/1P-ij2DcjX7HwqWG5dtX7Q1SpI779SaRW/edit?usp=drive_link&ouid=102836171977705631382&rtpof=true&sd=true
