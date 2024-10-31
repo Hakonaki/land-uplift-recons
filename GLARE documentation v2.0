@@ -33,8 +33,9 @@ The algorithm is made for QGIS, Raster Calculator tool.  The formula uses three 
     1. In QGIS, add the three default raster files (Layer (Top Menu) → Add Layer → Add Raster file → Browse → Add File).
     2. Load the base DTM that you want to transform [User_DTM].
     3. Open Raster Calculator     Raster (Top Menu) → Raster Calculator (4–10)
-				or (QGIS v. 3.28)	Processing (Top Menu) → Toolbox → Raster 								Analysis → 	Raster Calculator.
-[Top Menu Raster path (allows faster on-the-fly generation)]
+				or Processing (Top Menu) → Toolbox → Raster Analysis → 	Raster Calculator.
+
+[Top Menu Raster path (allows fast on-the-fly generation)]
     4. Copy the following expression (here) to Raster Calculator Expression:
 "[User_DTM]@1" - ((2 / 3.14159 * ("TIN_gthick@1" * 0.077) * (ATAN("TIN_meltBP@1" / (5 * ("TIN_gthick@1" * 0.077) + 590)) - ATAN(("TIN_meltBP@1" -1950 + -4000 / (5 * ("TIN_gthick@1" * 0.077) + 590)))) + ((("TIN_uplift@1" * 0.075) * ((2020 - -4000) / 100)) - (0.5 * (-0.011 * (("TIN_uplift@1" * 0.075) * ((2020 - -4000) / 100) ^ 2))))) - [Sea-level reference]
     5. Replace [User_DTM] with your DTM from the Raster Band list.
@@ -46,11 +47,11 @@ For example at 7000 BCE the minimum elevation level is -38 for the Baltic Sea (A
     10. Click OK (apply elevation-based pseudocoloring via Symbology, set minimum to zero, and enable clip out-of-range values).
 
 [Processing Toolbox path (enables batch processing)]:
-The Processing Toolbox → Raster Calculator path enables Run as Batch Process, which can process several consecutive processes on the same run. Note: The expression syntax stopped functioning with the toolbox calculator by the overnight build of QGIS, v. 3.34.2, but works well at least in Long-Term Release, v. 3.28.14.
+The Processing Toolbox → Raster Calculator path enables Run as Batch Process, which can process several consecutive processes on the same run.
 
 Repeat steps 4–7.
 
-    8. Toggle your original DTM as the Reference Layer.
+    8. Toggle your DTM AND TIN_uplift.tif, TIN_meltBP.tif and TIN_gthick.tif as Reference Layers.
     9. Either leave Output empty (creating a temporary file) or specify a file destination for the new raster (Save to File).
     10. Click Run.
 
