@@ -9,7 +9,7 @@ Keywords: QGIS; post-glacial; land uplift; sea-level rise; Fennoscandia; Holocen
 
 1. Introduction
 
-This method for QGIS (verified version 3.38 and 3.28) transforms a chosen digital terrain model (DTM) from an area within Fennoscandia, Northern Europe, to simulate a past reconstructed landscape. The applied formula takes into account the glacial isostatic adjustment (land uplift). A global sea-level correction and a separate lake table correction during Baltic isolations can be applied separately. The formula and its variables are based on published research.
+This method for QGIS (verified version 3.28--3.38) transforms a chosen digital terrain model (DTM) from an area within Fennoscandia, Northern Europe, to simulate a past reconstructed landscape. The applied formula takes into account the glacial isostatic adjustment (land uplift). A global sea-level correction and a separate lake table correction during Baltic isolations can be applied separately. The formula and its variables are based on published research.
 
 The method is temporally applicable throughout the Holocene to the end of the Pleistocene, with a suggested maximum time-range of ~17,000 BP (15,000 BCE) and from present day to the future (2500 CE). The algorithm calculates the land uplift for each pixel of the DTM by referencing three base raster files.
 
