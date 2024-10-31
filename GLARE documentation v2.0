@@ -51,7 +51,7 @@ The Processing Toolbox → Raster Calculator path enables Run as Batch Process, 
 
 Repeat steps 4–7.
 
-    8. Toggle your DTM AND TIN_uplift.tif, TIN_meltBP.tif and TIN_gthick.tif as Reference Layers.
+    8. Toggle your DTM, TIN_uplift.tif, TIN_meltBP.tif and TIN_gthick.tif as Reference Layers.
     9. Either leave Output empty (creating a temporary file) or specify a file destination for the new raster (Save to File).
     10. Click Run.
 
