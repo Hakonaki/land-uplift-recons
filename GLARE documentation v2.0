@@ -29,6 +29,7 @@ Workflow summary (custom):
 - 2.	Edit vector values and interpolate into rasters.
 - 3.	Follow advanced instructions.
 
+
 2. Instructions for easy use
 The easy use involves loading the GLARE model file into QGIS Toolbox and applying it like any other tool.
 Download (from Google Drive):	Base Raster.tif
@@ -47,6 +48,7 @@ https://drive.google.com/drive/folders/184nPIZuX83gr3Yd6tVBGXCkpUysNY-CO?usp=dri
 - 6.	Match band numbers with the headings.
 - 7.	Define year in CE (minus for BCE).
 - 8.	Click OK.
+
 
 3. Instructions for advanced use
 This approach is a manual application of the algorithm made for QGIS, Raster Calculator tool. The formula uses three base raster files and a DTM selected by the user for base calculation, with the sea-level value inserted manually.		
@@ -84,10 +86,12 @@ Repeat steps 4–7.
 
 The base raster files were TIN interpolated from vector data (the geopackage includes the extent vector of GLARE as well as the vector for Baltic Lake cutout, which is used in large models when Oceanic and Baltic mean water-levels are asynchronous).
 
+
 4. Instructions for customizable use
 - 1.	Add GLARE_2-0.gpkg (and modify values).
 - 2.	Apply TIN Interpolation to create custom raster files.
 - 3.	Follow advanced use instructions.
+
 
 5. Method
 
