@@ -1,11 +1,20 @@
 # Glacial Land Adjustment Regenerator (GLARE)
 A method for QGIS for simulating land uplift of Fennoscandia by recalculating a digital terrain model.
 
-Download the three raster layers from: https://drive.google.com/drive/folders/184nPIZuX83gr3Yd6tVBGXCkpUysNY-CO?usp=drive_link
-and follow instructions in GLARE_documentation_v2-0.rtf (https://docs.google.com/document/d/1cQe4TnTxruQbU8-gqf5nP9UGU2SsduIp/edit?usp=drive_link&ouid=102836171977705631382&rtpof=true&sd=true)
+Instructions for Toolbox-option and Manual-option.
+Access model documentation and materials: https://drive.google.com/drive/folders/184nPIZuX83gr3Yd6tVBGXCkpUysNY-CO?usp=drive_link
+Follow instructions in GLARE_documentation_v2-0.rtf (https://docs.google.com/document/d/1cQe4TnTxruQbU8-gqf5nP9UGU2SsduIp/edit?usp=drive_link&ouid=102836171977705631382&rtpof=true&sd=true)
 
 # Summary
-Load your own DTM and the three default rasters in QGIS, open Raster Calculator tool and paste this equation to Expression:
+Load your own DTM and default rasters in QGIS and :
+
+-----------------------------------------------------------------------
+
+a. Add model to Toolbox, match raster and band inputs and apply Year-in-CE.
+
+-----------------------------------------------------------------------
+
+or b. Open Raster Calculator tool and paste this equation to Expression:
 
 "User_DTM@1" - ((2 / 3.14159 * ("TIN_gthick@1" * 0.077) * (ATAN("TIN_meltBP@1" / (5 * ("TIN_gthick@1" * 0.077) + 590)) - ATAN(("TIN_meltBP@1" -1950 + [yearCE]) / (5 * ("TIN_gthick@1" * 0.077) + 590)))) + ((("TIN_uplift@1" * 0.075) * ((2020 - [yearCE]) / 100)) - (0.5 * (-0.011 * (("TIN_uplift@1" * 0.075) * ((2020 - [yearCE]) / 100) ^ 2))))) - [sea-level ref]
 
