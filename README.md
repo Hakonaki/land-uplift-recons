@@ -3,7 +3,7 @@ A method for QGIS for simulating land uplift of Fennoscandia by recalculating a 
 
 Instructions for Toolbox-option and Manual-option.
 Access model documentation and materials: https://drive.google.com/drive/folders/184nPIZuX83gr3Yd6tVBGXCkpUysNY-CO?usp=drive_link
-Follow instructions in GLARE_documentation_v2-0.rtf (https://docs.google.com/document/d/1cQe4TnTxruQbU8-gqf5nP9UGU2SsduIp/edit?usp=drive_link&ouid=102836171977705631382&rtpof=true&sd=true)
+Follow instructions in GLARE_documentation_v2-1.rtf (https://docs.google.com/document/d/1cQe4TnTxruQbU8-gqf5nP9UGU2SsduIp/edit?usp=drive_link&ouid=102836171977705631382&rtpof=true&sd=true)
 
 # Summary
 Load your own DTM and default rasters in QGIS and :
