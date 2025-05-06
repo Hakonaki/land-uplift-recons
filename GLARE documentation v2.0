@@ -14,7 +14,7 @@ The method is temporally applicable throughout the Holocene to the end of the Pl
 Workflow summary (easy):
 - 1.	Load Base Raster and sea-level files (from toolbox folder).
 - 2.	Add GLARE.model3 to Processing Toolbox.
-- 3.	In the model tool input, match rasters A, C and D and band numbers.
+- 3.	In the model tool input, match rasters A, C and D band numbers.
 - 4.	Apply Year-in-CE (minus for BCE).
 - 5.	Done.
 
