@@ -1,4 +1,4 @@
-# Glacial Land Adjustment Regenerator (GLARE)
+# Post-Glacial Land Adjustment Regenerator (GLARE)
 A method for QGIS for simulating land uplift of Fennoscandia by recalculating a digital terrain model.
 
 Instructions for Toolbox-option and Manual-option.
