@@ -16,7 +16,7 @@ a. Add model to Toolbox, match raster and band inputs and apply Year-in-CE.
 
 or b. Open Raster Calculator tool and paste this equation to Expression:
 
-"User_DTM@1" - ((2 / 3.14159 * ("Base Raster@1" * 0.077) * (ATAN("Base Raster@2" / (5 * ("Base Raster@1" * 0.077) + 590)) - ATAN(("Base Raster@2" -1950 + [yearCE]) / (5 * ("Base Raster@1" * 0.077) + 590)))) + ((("Base Raster@3" * 0.075) * ((2020 - [yearCE]) / 100)) - (0.5 * (-0.011 * (("Base Raster@3" * 0.075) * ((2020 - [yearCE]) / 100) ^ 2))))) - [sea-level ref]
+"User_DTM@1" - ((2 / 3.14159 * ("Base Raster@1" * 0.075) * (ATAN("Base Raster@2" / (5 * ("Base Raster@1" * 0.075) + 500)) - ATAN(("Base Raster@2" -1950 + [yearCE]) / (5 * ("Base Raster@1" * 0.075) + 500)))) + ((("Base Raster@3" * 0.072) * ((2020 - [yearCE]) / 100)) - (0.5 * (-0.014 * (("Base Raster@3" * 0.072) * ((2020 - [yearCE]) / 100) ^ 2))))) - [sea-level ref]
 
 Replace the three [yearCE] values with the year you want to simulate (in Common Era, negative value indicates Before Common Era; e.g. 4000 BCE = -4000).
 Replace User_DTM@1 with the name of your chosen DTM (including @1 for band).
@@ -24,7 +24,7 @@ Replace User_DTM@1 with the name of your chosen DTM (including @1 for band).
 <br>
 <br>
 Example (year 6000 BCE):
-"User_DTM@1" - ((2 / 3.14159 * ("Base Raster@1" * 0.077) * (ATAN("Base Raster@2" / (5 * ("Base Raster@1" * 0.077) + 590)) - ATAN(("Base Raster@2" -1950 + -6000) / (5 * ("Base Raster@1" * 0.077) + 590)))) + ((("Base Raster@3" * 0.075) * ((2020 - -6000) / 100)) - (0.5 * (-0.011 * (("Base Raster@3" * 0.075) * ((2020 - -6000) / 100) ^ 2))))) - -17
+"User_DTM@1" - ((2 / 3.14159 * ("Base Raster@1" * 0.075) * (ATAN("Base Raster@2" / (5 * ("Base Raster@1" * 0.075) + 500)) - ATAN(("Base Raster@2" -1950 + -6000) / (5 * ("Base Raster@1" * 0.075) + 500)))) + ((("Base Raster@3" * 0.072) * ((2020 - -6000) / 100)) - (0.5 * (-0.014 * (("Base Raster@3" * 0.072) * ((2020 - -6000) / 100) ^ 2))))) - -19
 <br>
 <br>
 <br>
