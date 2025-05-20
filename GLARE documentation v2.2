@@ -1,6 +1,6 @@
-Glacial Land Adjustment Regenerator (GLARE) for Fennoscandia (v. 2.1)
+Post-Glacial Land Adjustment Regenerator (GLARE) for Fennoscandia (v. 2.2)
 
-Aki Hakonen	11-Dec-2024
+Aki Hakonen	20-May-2025
 Archaeologist, PhD
 University of Oulu, Finland
 
@@ -9,12 +9,12 @@ Keywords: QGIS; post-glacial; land uplift; sea-level rise; Fennoscandia; Holocen
 
 1. Introduction
 
-This method for QGIS (verified version 3.28–3.40) transforms a chosen digital terrain model (DTM) from within the extent of the former Fennoscandian Ice Shield, to simulate past geography and landscape. The applied formula takes into account the glacial isostatic adjustment (land uplift), which is further corrected by global sea-level change. A separate lake table correction during Baltic isolations can be applied separately. The formula and its variables are based on published research.
+This method for QGIS (verified version 3.28–3.42) transforms a chosen digital terrain model (DTM) from within the extent of the former Fennoscandian Ice Shield, to simulate past geography and landscape. The applied formula takes into account the glacial isostatic adjustment (land uplift), which is further corrected by global sea-level change. A separate lake table correction during Baltic isolations can be applied separately. The formula and its variables are based on published research.
 The method is temporally applicable throughout the Holocene to the end of the Pleistocene, with a suggested maximum time-range of ~17,000 BP (15,000 BCE) and from present day to the future (2500 CE). The algorithm calculates the land uplift for each pixel of the DTM by referencing three base raster files.
 Workflow summary (easy):
 - 1.	Load Base Raster and sea-level files (from toolbox folder).
 - 2.	Add GLARE.model3 to Processing Toolbox.
-- 3.	In the model tool input, match rasters A, C and D band numbers.
+- 3.	In the model tool input, match rasters A, C and D and band numbers.
 - 4.	Apply Year-in-CE (minus for BCE).
 - 5.	Done.
 
@@ -64,11 +64,11 @@ or Processing → Toolbox → Raster Analysis → Raster Calculator.
 
 [Top Menu Raster path (allows fast on-the-fly generation)]
 - 4.	Copy the following expression (here) to Raster Calculator Expression:
-"[User_DTM]@1" - ((2 / 3.14159 * ("Base Raster@1" * 0.077) * (ATAN("Base Raster@2" / (5 * ("Base Raster@1" * 0.077) + 590)) - ATAN(("Base Raster@2" -1950 + -4000 / (5 * ("Base Raster@1" * 0.077) + 590)))) + ((("Base Raster@3" * 0.075) * ((2020 - -4000) / 100)) - (0.5 * (-0.011 * (("Base Raster@3" * 0.075) * ((2020 - -4000) / 100) ^ 2))))) - [Sea-level reference]
+"[User_DTM]@1" - ((2 / 3.14159 * ("Base Raster@1" * 0.075) * (ATAN("Base Raster@2" / (5 * ("Base Raster@1" * 0.075) + 500)) - ATAN(("Base Raster@2" -1950 + -4000 / (5 * ("Base Raster@1" * 0.075) + 500)))) + ((("Base Raster@3" * 0.072) * ((2020 - -4000) / 100)) - (0.5 * (-0.014 * (("Base Raster@3" * 0.072) * ((2020 - -4000) / 100) ^ 2))))) - [Sea-level reference]
 - 5.	Replace [User_DTM] with your DTM from the Raster Band list.
 - 6.	Replace the three values -4000 (meaning 4000 BCE) with your chosen year (CE, with negative value signifying BCE). Make sure these are all the same.
 - 7.	Apply approximation of sea-level fluctuation from the Sea-level reference card (especially relevant prior to 2000 BCE). Replace [Sea-level reference] by appending the negative value to the Expression from the Sea-level reference card.
-For example at 7000 BCE the minimum elevation level is -38 for the Baltic Sea (Ancylus Lake) zone and -25.5 for the oceanic zone.
+For example at 8200 BCE the minimum elevation level is -21.55 for the Baltic Sea (Ancylus Lake) zone and -46.55 for the oceanic zone.
 - 8.	Either check the Create on-the-fly raster (faster computation, but handling multiple temporary files increases RAM usage), or specify a file destination for the new raster (Output Layer, Browse).
 - 9.	Click Use Selected Layer Extent (make sure your DTM is highlighted on the left-hand list).
 - 10.	Click OK (apply elevation-based pseudocoloring via Symbology, set minimum to zero, and enable clip out-of-range values).
@@ -86,7 +86,7 @@ The base raster files were TIN interpolated from vector data (the geopackage inc
 
 
 4. Instructions for customizable use
-- 1.	Add GLARE_2-0.gpkg (and modify values).
+- 1.	Add GLARE_2-2.gpkg (and modify values).
 - 2.	Apply TIN Interpolation to create custom raster files.
 - 3.	Follow advanced use instructions.
 
@@ -113,14 +113,14 @@ The equation multiplies the current uplift by past centuries and subtracts a neg
 
 Applied equation:
 
-z = (v * 0.075) * ((2011 - y) / 100)) - (0.5 * (-0.011 * v * 0.075)) * ((2011 - y) / 100) ^ 2))
+z = (v * 0.072) * ((2011 - y) / 100)) - (0.5 * (-0.014 * v * 0.072)) * ((2011 - y) / 100) ^ 2))
 
 v = current uplift rate in mm/year. Base raster interpolated from GPS measurements published by the Nordic Geodetic Commission (NKG2016LU absolute). To convert the rate to m/century and compensate the added effect of the fast uplift, the rate is multiplied by 0.075 (0.1 for conversion and 0.75 for compensation).
 y = Year for simulation (in CE). The 2011 parameter is a probable redundancy (could also be set to whichever year the chosen coordinate system uses as the zero year, or which ever year the elevation measurements of the DEM were taken, but the effect is rather negligible, a few cm give or take). The year is divided by 100 to convert it to centuries.
 Variable d is set at 1.1% regional deceleration, with a multiplier of -0.018 to a converted and compensated v. The original variable value 1.5% was based on tests by Okkonen (1998; 2001) and verified in Hakonen 2017, but these tests were made obsolete by the additional variables in the current method.
 
 5.3. Påsse & Andersson (2005) fast uplift equation with multiplier
-z = 2 / π * (h * 0.077) * arctan(r / (5 * (h * 0.077) + 590) – arctan((r -1950 + y) / (5 * (h * 0.077) + 590)
+z = 2 / π * (h * 0.075) * arctan(r / (5 * (h * 0.075) + 500) – arctan((r -1950 + y) / (5 * (h * 0.075) + 500)
 h = Maximum thickness of the ice during the last 20000 years according to Patton et al. 2017 (also ICEMAP). The value (in meters) is converted into an abstract multiplier to conform with the original Påsse & Andersson equation.
 r 	= Year when ice retreated from the location, in Before Present. This value derives from the raster file based on a dataset of highest shorelines published by Påsse & Daniels (2015: Table 1).
 y 	= Year for simulation (in CE; in r -1950 + y, the value converts temporarily to BP).
@@ -139,7 +139,7 @@ The current sea level reference card was compiled from terrestrial and marine be
 
 7.1. Inland lake modeling
 
-There is no automated method for lake tilt modeling as of yet. You can do this manually by identifying the lowest outflow, measuring its elevation and matching a contour with the level (contour polygon tool command ‘-fl n.n’).
+There is no automated method for lake tilt modeling as of yet. You can do this manually by identifying the lowest outflow, measuring its elevation and matching a contour with the level (contour tool command ‘-fl n.n’).
 
 
 7.2. Tweaking the equation
